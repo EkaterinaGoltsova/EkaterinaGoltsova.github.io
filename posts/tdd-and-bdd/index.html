@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#"><!--<![endif]-->
+
+    <head>
+                <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="author" content="">
+  
+	
+        <meta property="og:site_name" content="Записки bаckend-разработчика">
+        <meta property="og:title" content="Записки bаckend-разработчика">
+        <meta property="og:url" content="https://EkaterinaGoltsova.github.io/posts/tdd-and-bdd/">
+        <meta property="og:description" content="">
+    
+        <meta property="og:type" content="article" />
+        <meta property="og:article:author" content="" />
+        <meta property="og:article:published_time" content="2017-06-25T18:30:25&#43;07:00" />
+    
+        <meta name="generator" content="Hugo 0.21" />
+        <title>TDD и BDD с примерами &middot; Записки bаckend-разработчика</title>
+        <link rel="canonical" href="https://EkaterinaGoltsova.github.io/" />
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="">
+        <link rel="stylesheet" type="text/css" href="https://EkaterinaGoltsova.github.io/css/main.css"/>
+        <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300|Fira+Sans:700" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    </head>
+
+<body>
+<!--[if lt IE 7]><p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chrome/‎">install Google Chrome</a> to experience this site.</p><![endif]-->
+
+    <header id="site-header">
+        <div class="container">
+            <a href="https://EkaterinaGoltsova.github.io/" alt="Записки bаckend-разработчика"><h1 class="blog-title heading">Записки bаckend-разработчика</h1></a>
+            <p class="blog-description"></p>
+        </div>
+    </header>
+<main class="content" role="main">
+	<div class="container">
+		<article class="posts">
+	<header class="post-header">
+        <h3 class="p-post-title">TDD и BDD с примерами</h3>
+    </header>
+
+    <section class="post-content">
+        <p>Многие разработчики очень любят пренебрегать тестированием собственных задач. Признайтесь, отдавали ли вы задачи в тест, при этом практически не проверяя их? А потом доделывали и опять отдавали, доделывали и отдавали.. А ведь лучше вас unit тестирование никто не проведет, ведь лучше всего знаете и понимаете код — именно вы. Если программист захочет, то с легкостью придумает и воспроизведет граничные ситуации и сразу же сможет их проверить и пофиксить. Роль тестирования сложно недооценить, в наше время умненькие дяденьки даже методологии разработки придумали, главным смыслом которых является написание тестов, а потом уже и самого кода. Рассмотрим на примере, что значит TDD и BDD, а также как выглядят код и тесты, полученные в результате разработки с помощью этих методологий.</p>
+
+<p>Начнем с небезызвестной методологии под названием <em>TDD (Test-driven development)</em>. В соответствии с ее принципами, сначала разработчик пишет тест, затем заставляет тест работать, далее рефакторит получившийся код и так по кругу, пока не будут реализованы все необходимые функции. Посмотрим, как выглядит разработка через тестирование на примере разработки калькулятора. «О, нет, опять калькулятор! Когда же в статьях будут реалистичные примеры?» - воскликните вы. Реалистичных примеров не обещаю в рамках этой статьи, а вот калькулятор будет работать не просто с числами, а с калориями. Калькуляторы калорий для человеческих особей существуют, а вот для бегемотиков нет. Исправим это недоразумение.  Для написания unit тестов воспользуемся фреймовроком PHPUnit, следовательно, тестируемый код будем писать на php.</p>
+
+<p>Итак, есть тривиальный пример - бегемотик желает знать, сколько грамм он наберет, если съест  14 килограмм молодого австралийского крокодила. Опытные британские диетологи утверждают, что после такого обеда бегемотик наберет 252 грамма жира. Проверим!</p>
+
+<pre><code class="language-php">class Hippopotamus_Fitness_CalculatorTest extends PHPUnit_Framework_TestCase
+{
+
+	private $_calculator;
+
+	public function setUp()
+	{	
+		$this-&gt;_calculator = $calculator = new  Hippopotamus_Fitness_Calculator();
+	}
+
+	public function testGetWeightGainAfterDinnerCrocodile()
+	{
+		$weightGain = $this-&gt;_calculator-&gt;getWeightGain('crocodile', 14);
+		$this-&gt;assertEquals(252, $weightGain);
+	}
+}
+</code></pre>
+
+<p>Для того, чтобы похудеть, бегемотикам необходимо заниматься спортом. Африканские гроссмейстеры утверждают, что 60-минутная игра в шахматы помогает сжечь 174 грамма жира. Коду мы не верим, код мы проверим!</p>
+
+<pre><code class="language-php">	public function testGetWeightReductionAfterPlayingChess()
+	{
+		$weightReduction = $this-&gt;_calculator-&gt;getWeightReduction('chess', 60);
+		$this-&gt;assertEquals(174, $weightReduction);
+	}
+</code></pre>
+
+<p>Для полноты картины, попробуем посчитать, сколько грамм сбросит бегемотик, если часок драгой поиграет в доту2.</p>
+
+<pre><code class="language-php">	public function testGetWeightReductionAfterUndefinedGame()
+	{
+		$weightReduction = $this-&gt;_calculatorgetWeightReduction('dota2', 60);
+		$this-&gt;assertEquals(null, $weightReduction);
+	}
+</code></pre>
+
+<p>Эх, нисколько! Потому что бегемотики в доту не играют.</p>
+
+<p>Запускаем тесты и видим, что все тесты проваливаются. Пока все идет по плану!</p>
+
+<p>Ну а теперь пришло время заставить тесты работать и написать сам фитнес калькулятор для бегемотиков.</p>
+
+<p>Давайте для начала, для простоты изложения, выделим все необходимые данные в отдельный класс и будем использовать его при разработке сценариев. Это не самое лучшее архитектурное решение, но остановимся на этом варианте.</p>
+
+<pre><code class="language-php">class Hippopotamus_Fitness_Calories
+{
+
+    /**
+     * Количество калорий, сжигаемых за 1 минуту игры
+     *
+     * @var array
+     */
+	CONST COUNT_IN_GAMES = [
+		'hide_and_seek' =&gt; 132,
+		'сatch-up' =&gt; 432,
+		'chess' =&gt; 87 
+	];
+
+	
+    /**
+     * Количество калорий в 1 кг продукта
+     *
+     * @var array
+     */
+	CONST COUNT_IN_FOODS = [
+		'grass' =&gt; 21,
+		'water_plant' =&gt; 32,
+		'crocodile' =&gt; 540
+	];
+
+    /**
+     * Количество калорий, необходимых для сжигания 1 грамма жира
+     *
+     * @var int
+     */
+	CONST СOUNT_FOR_BURN_FAT = 30;
+}
+</code></pre>
+
+<p>А теперь начнем писать код, и будем писать до тех пор, пока все тесты не будут зелеными. Вот что у меня получилось.</p>
+
+<pre><code class="language-php">class Hippopotamus_Fitness_Calculator
+{
+
+	public function getWeightGain($food, $weight)
+	{
+		if (!isset(Hippopotamus_Fitness_Calories::COUNT_IN_FOODS[$food])) {
+			return null;
+		}
+
+		return (Hippopotamus_Fitness_Calories::COUNT_IN_FOODS[$food] * $weight) / 		 
+				Hippopotamus_Fitness_Calories::СOUNT_FOR_BURN_FAT;
+	}
+
+
+	public function getWeightReduction($game, $time)
+	{
+		if (!isset(Hippopotamus_Fitness_Calories::COUNT_IN_GAMES[$game])) {
+			return null;
+		}
+
+		return (Hippopotamus_Fitness_Calories::COUNT_IN_GAMES[$game] * $time) / 
+			Hippopotamus_Fitness_Calories::СOUNT_FOR_BURN_FAT;
+	}
+}
+</code></pre>
+
+<p>Запускаем тесты и видим:</p>
+
+<pre><code>Time: 183 ms, Memory: 14.25Mb
+
+OK (3 tests, 3 assertions)
+</code></pre>
+
+<p>Все тесты зеленые! Теперь, по всем канонам, код необходимо порефакторить и сделать читаемым, но дабы статья не разрасталась до немыслимых размеров, на этом мы остановимся. Давайте лучше сформулируем основные преимущества и недостатки этой методологии.</p>
+
+<p>Итак, основные преимущества TDD:
+ + программист продумывает детали и интерфейс еще до реализации, что помогает ему абстрагироваться и посмотреть на функциональность со стороны пользователя.
+ + если есть тесты, программист может менять легаси-код, не боясь что-то отвалить (если и отвалит, тесты скажут ему об этом).
+ + уменьшаются ошибки в коде, дефекты, время отладки и т.д. и т.п.</p>
+
+<p>Без дегтя нет и меда, поэтому пара слов о недостатках:
+ + в некоторых случаях увеличивается время разработки
+ + unit тесты обычно пишутся тем же человеком, который пишет и тестируемый код. Если разработчик не разобрался в требованиях, то ошибки будут как в тестах, так и в коде.
+ + не всегда руководство соглашается понимать, что tdd — это круто и стоит увеличивать расходы на разработку на этапах внедрения этой практики.</p>
+
+<p>Теперь рассмотрим более <del>модный</del> молодой подход <em>BDD - Behaviour Driven Development</em>. Он тоже предполагает написание сначала тестов, а потом кода, но с некоторыми отличием в подходе написания тестов. Ой, не тестов! А сценариев. В этом подходе не существует слова «тест». Все, что мы привыкли считать тестом, здесь считается сценарием или поведением. Поэтому исключаем из названий функций слово «test» и пишем названия понятным даже для пм-ов языком. Название шагов сценария должны показывать, что должен делать этот сценарий, какое у него поведение.</p>
+
+<p>Итак, поведенческие сценарии будем писать с использованием Behat. Сначала опишем тестируемую функцию:</p>
+
+<pre><code>Feature: getWeightReduction
+  In order to calculate weight loss after games
+  As a hippopotamus
+  I need to be able to know how many grams will help to lose a different kind of sport activity
+</code></pre>
+
+<p>Теперь опишем шаги сценария:</p>
+
+<pre><code>Scenario: Calculation of the loss of kilograms during a game of chess within an hour
+  Given calculator 
+  And I have a game named &quot;chess&quot;
+  And I have a time - 60 minutes
+  When I call getWeightReduction
+  Then I should get: 174 grams 
+</code></pre>
+
+<p>Запустим наш сценарий:</p>
+
+<p><img src="https://ekaterinagoltsova.github.io/img/testing/1.png" alt="Images" /></p>
+
+<p>Даже на этом этапе мы уже можем запускать тесты, которые проваливаются. Заметьте, что умненький behat выдает шаблон шагов, которые необходимо реализовать. Реализуем описанный сценарий с помощью behat:</p>
+
+<pre><code class="language-php">class FeatureContext extends BehatContext
+{
+
+    private $_calculator;
+
+    private $_output;
+
+    /**
+     * @Given /^calculator$/
+     */
+    public function iCreateCalculator()
+    {
+        $this-&gt;_calculator = new Hippopotamus_Fitness_Calculator();
+    }
+
+    /**
+     * @Given /^I have a game named &quot;([^&quot;]*)&quot;$/
+     */
+    public function iHaveAGame($arg1)
+    {
+        $this-&gt;_calculator-&gt;setGame($arg1);
+    }
+
+    /**
+     * @Given /^I have a time - (\d+) minutes$/
+     */
+    public function iHaveATime($arg1)
+    {
+        $this-&gt;_calculator-&gt;setTime($arg1);
+    }
+
+    /**
+     * @When /^I call getWeightReduction$/
+     */
+    public function iCallGetWeightreduction()
+    {
+        $this-&gt;_output = $this-&gt;_calculator-&gt;getWeightReduction();
+    }
+
+    /**
+     * @Then /^I should get: (\d+) grams$/
+     */
+    public function iShouldGetGrams($arg1)
+    {
+         if ((int)$arg1 !== $this-&gt;_output) {
+            throw new Exception(&quot;Actual grams is:\n&quot; . $this-&gt;_output);
+         }
+    }
+}
+</code></pre>
+
+<p>Запускаем наш сценарий, который также «красный». Заставим его работать. Будем использовать все тот же класс с константами, что и в первом случае.</p>
+
+<pre><code>class Hippopotamus_Fitness_Calculator
+{
+
+	private $game;
+
+	private $time;
+
+	public function setGame($game)
+	{
+		$this-&gt;game = $game;
+	}
+
+	public function setTime($time)
+	{
+		$this-&gt;time = $time;
+	}
+
+	public function getWeightReduction()
+	{
+		if (!isset(Hippopotamus_Fitness_Calories::COUNT_IN_GAMES[$this-&gt;game])) {
+			return null;
+
+		}
+
+		return (Hippopotamus_Fitness_Calories::COUNT_IN_GAMES[$this-&gt;game] * $this-&gt;time) / 
+			Hippopotamus_Fitness_Calories::СOUNT_FOR_BURN_FAT;
+	}
+
+}
+</code></pre>
+
+<p>Снова запускаем сценарий и видим следующий результат.</p>
+
+<p><img src="https://ekaterinagoltsova.github.io/img/testing/2.png" alt="Images" /></p>
+
+<p>Таким образом, любой человек может описать множество сценариев:</p>
+
+<pre><code>Scenario: Calculation of the loss of kilograms during a game of chess within an hour
+  Given calculator 
+  And I have a game named &quot;chess&quot;
+  And I have a time - 60 minutes
+  When I call getWeightReduction
+  Then I should get: 174 grams 
+
+Scenario: Calculation of the loss of kilograms during a game of chess within an hour
+  Given calculator 
+  And I have a game named &quot;hide_and_seek&quot;
+  And I have a time - 30 minutes
+  When I call getWeightReduction
+  Then I should get: 132 grams 
+
+Scenario: Calculation of the loss of kilograms during a game of chess within an hour
+  Given calculator 
+  And I have a game named &quot;catch-up&quot;
+  And I have a time - 15 minutes
+  When I call getWeightReduction
+  Then I should get: 216 grams
+</code></pre>
+
+<p>Лично мне больше нравится результат после TDD разработки, но как говорится, для определенных целей определенные инструменты.</p>
+
+<p>Преимущества BDD:
+*   сценарии понятны не только вам, но и менеджерам и другим далеким от разработки людям
+*   сценарии описывают, как конечные пользователи будут использовать системы
+*   на выходе получается почти готовая отличная документация</p>
+
+<p>Недостатки BDD:
+*   все те же, что и у TDD ;)</p>
+
+<p>Свое изложение мне пора заканчивать, но нами остались нетронуты еще ADDT, DDT, KDT и ODT .. о которых обязательно будет отдельная статья. Всем добра!</p>
+
+    </section>
+
+    <hr>
+
+    <footer class="post-footer">
+        <section class="f-1">
+            
+            
+            <p class="f-post-time"><time datetime="2017-06-25T18:30:25&#43;07:00">June 25, 2017</time></p>
+        </section>
+                        
+        <section class="f-2">
+            <section class="share">
+                <span>Share:
+                <a class="icon-twitter" href="http://twitter.com/share?text=TDD%20%d0%b8%20BDD%20%d1%81%20%d0%bf%d1%80%d0%b8%d0%bc%d0%b5%d1%80%d0%b0%d0%bc%d0%b8&url=https%3a%2f%2fEkaterinaGoltsova.github.io%2fposts%2ftdd-and-bdd%2f"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <i class="fa fa-twitter"></i>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fEkaterinaGoltsova.github.io%2fposts%2ftdd-and-bdd%2f"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <i class="fa fa-facebook"></i>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fEkaterinaGoltsova.github.io%2fposts%2ftdd-and-bdd%2f"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <i class="fa fa-google-plus"></i>
+                </a>
+                </span>
+            </section>
+
+            
+        </section>
+             
+        <section id="comments">
+            <div id="disqus_thread" class="post-comments"></div>
+            <script type="text/javascript">
+              if (window.location.hostname != "localhost") {
+                var disqus_shortname = 'ekaterina-goltsova';
+                (function() {
+                  var dsq = document.createElement('script');
+                  dsq.type = 'text/javascript';
+                  dsq.async = true;
+                  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+              }
+            </script>
+            <noscript>
+              Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+            </noscript>
+        </section>
+        
+        
+    </footer>
+</article>
+	</div>
+</main>
+     
+        <section id="comments">
+            <div id="disqus_thread" class="post-comments"></div>
+            <script type="text/javascript">
+              if (window.location.hostname != "localhost") {
+                var disqus_shortname = 'ekaterina-goltsova';
+                (function() {
+                  var dsq = document.createElement('script');
+                  dsq.type = 'text/javascript';
+                  dsq.async = true;
+                  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+              }
+            </script>
+            <noscript>
+              Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+            </noscript>
+        </section>
+        
+
+    <footer id="site-footer">
+        <div class="container">
+          
+          
+          
+          
+          <a href="https://EkaterinaGoltsova.github.io/index.xml" title="Get the RSS feed"><span class="tooltip"><i class="fa fa-rss"></i></span></a>
+          <section>&copy; <a href="https://EkaterinaGoltsova.github.io/"></a> 2017 | All rights reserved</section>
+        </div>
+    </footer>
+
+    <script type="text/javascript" src="https://EkaterinaGoltsova.github.io/js/fittext.js"></script>
+    <script type="text/javascript">
+      $(".heading").fitText();
+    </script>
+
+
+
+</body>
+</html>

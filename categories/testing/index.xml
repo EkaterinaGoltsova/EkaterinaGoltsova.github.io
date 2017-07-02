@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Testing on Записки bаckend-разработчика</title>
+    <link>https://EkaterinaGoltsova.github.io/categories/testing/</link>
+    <description>Recent content in Testing on Записки bаckend-разработчика</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ru-ru</language>
+    <lastBuildDate>Sun, 25 Jun 2017 18:30:25 +0700</lastBuildDate>
+    
+	<atom:link href="https://EkaterinaGoltsova.github.io/categories/testing/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>TDD и BDD с примерами</title>
+      <link>https://EkaterinaGoltsova.github.io/posts/tdd-and-bdd/</link>
+      <pubDate>Sun, 25 Jun 2017 18:30:25 +0700</pubDate>
+      
+      <guid>https://EkaterinaGoltsova.github.io/posts/tdd-and-bdd/</guid>
+      <description>Многие разработчики очень любят пренебрегать тестированием собственных задач. Признайтесь, отдавали ли вы задачи в тест, при этом практически не проверяя их? А потом доделывали и опять отдавали, доделывали и отдавали.. А ведь лучше вас unit тестирование никто не проведет, ведь лучше всего знаете и понимаете код — именно вы. Если программист захочет, то с легкостью придумает и воспроизведет граничные ситуации и сразу же сможет их проверить и пофиксить. Роль тестирования сложно недооценить, в наше время умненькие дяденьки даже методологии разработки придумали, главным смыслом которых является написание тестов, а потом уже и самого кода.</description>
+    </item>
+    
+  </channel>
+</rss>

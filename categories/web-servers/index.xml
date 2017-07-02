@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Web Servers on Записки bаckend-разработчика</title>
+    <link>https://EkaterinaGoltsova.github.io/categories/web-servers/</link>
+    <description>Recent content in Web Servers on Записки bаckend-разработчика</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ru-ru</language>
+    <lastBuildDate>Sat, 03 Jun 2017 22:21:25 +0700</lastBuildDate>
+    
+	<atom:link href="https://EkaterinaGoltsova.github.io/categories/web-servers/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>10 отличий Apache от Nginx</title>
+      <link>https://EkaterinaGoltsova.github.io/posts/apache-vs-nginx/</link>
+      <pubDate>Sat, 03 Jun 2017 22:21:25 +0700</pubDate>
+      
+      <guid>https://EkaterinaGoltsova.github.io/posts/apache-vs-nginx/</guid>
+      <description>Доброго времени суток, backend/frontend/full-stack/devops/qa/.. да какая разница, добро пожаловать, мой друг!
+Свой цикл статей хотелось бы начать с до неприличия банальной фразы - «Все познается в сравнении». Ведь невозможно говорить о том, что какой-либо инструмент лучший, не опробовав другой. Попробуем сравнить два самых популярных в мире веб-сервера - Apache, который обслуживает около 60 млн сайтов, и Nginx — около 40 млн (больше интересной статистики тут). Возможно, после прочтения данной статьи вы сможете определиться, что лучше подходит для вашего dev-окружения.</description>
+    </item>
+    
+  </channel>
+</rss>

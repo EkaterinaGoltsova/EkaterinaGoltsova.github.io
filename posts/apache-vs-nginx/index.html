@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#"><!--<![endif]-->
+
+    <head>
+                <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="author" content="">
+  
+	
+        <meta property="og:site_name" content="Записки bаckend-разработчика">
+        <meta property="og:title" content="Записки bаckend-разработчика">
+        <meta property="og:url" content="https://EkaterinaGoltsova.github.io/posts/apache-vs-nginx/">
+        <meta property="og:description" content="">
+    
+        <meta property="og:type" content="article" />
+        <meta property="og:article:author" content="" />
+        <meta property="og:article:published_time" content="2017-06-03T22:21:25&#43;07:00" />
+    
+        <meta name="generator" content="Hugo 0.21" />
+        <title>10 отличий Apache от Nginx &middot; Записки bаckend-разработчика</title>
+        <link rel="canonical" href="https://EkaterinaGoltsova.github.io/" />
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="">
+        <link rel="stylesheet" type="text/css" href="https://EkaterinaGoltsova.github.io/css/main.css"/>
+        <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300|Fira+Sans:700" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    </head>
+
+<body>
+<!--[if lt IE 7]><p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chrome/‎">install Google Chrome</a> to experience this site.</p><![endif]-->
+
+    <header id="site-header">
+        <div class="container">
+            <a href="https://EkaterinaGoltsova.github.io/" alt="Записки bаckend-разработчика"><h1 class="blog-title heading">Записки bаckend-разработчика</h1></a>
+            <p class="blog-description"></p>
+        </div>
+    </header>
+<main class="content" role="main">
+	<div class="container">
+		<article class="posts">
+	<header class="post-header">
+        <h3 class="p-post-title">10 отличий Apache от Nginx</h3>
+    </header>
+
+    <section class="post-content">
+        
+
+<p><img src="https://ekaterinagoltsova.github.io/img/nginx/nginx-vs-apache.png" alt="Images" /></p>
+
+<p>Доброго времени суток, backend/frontend/full-stack/devops/qa/.. да какая разница, добро пожаловать, мой друг!</p>
+
+<p>Свой цикл статей хотелось бы начать с до неприличия банальной фразы - «Все познается в сравнении». Ведь невозможно говорить о том, что какой-либо инструмент лучший, не опробовав другой. Попробуем сравнить два самых популярных в мире веб-сервера - Apache, который обслуживает около 60 млн сайтов, и Nginx — около 40 млн (больше интересной статистики <a href="https://www.similartech.com/compare/apache-vs-nginx">тут</a>). Возможно, после прочтения данной статьи вы сможете определиться, что лучше подходит для вашего dev-окружения. Итак, поехали! ;)</p>
+
+<p>Начнем с архитектурных и функциональных отличий.</p>
+
+<hr />
+
+<h4 id="1-метод-обработки-соединений-с-клиентами">1. Метод обработки соединений с клиентами</h4>
+
+<p>Издавна, <strong>Apache</strong> на каждый запрос от клиента создает отдельный процесс (или поток, зависит от выбранного mpm модуля). Выглядит это следующим образом - клиент отправляет запрос, веб-сервер создает отдельный процесс на этот запрос, отвечает клиенту и блокирует процесс до тех пор, пока клиент не закроет соединение. Это легко и просто в реализации, дебаге и мониторниге, но … Как вы могли бы догадаться, если у вас highload проект, то.. дела плохи. Процесс в любой ОС требует памяти и ресурсов, а когда процессов становиться неприлично много, обработка соединений неприлично  замедляется, память кончается, CPU растет. Для мелких проектов такая реализация архитектуры обработки соединений не добавит головной боли, но для высоконагруженных проектов придется ставить очень мощное железо или искать альтернативные варианты.</p>
+
+<p><strong>Nginx</strong> состоит из master-процесса и нескольких дочерних процессов. Мастер процесс обычно один — он создает дочерние процессы (воркеры, загрузчик кеша и кеш менеджер), считывает конфигурацию и открывает порты. Воркеров обычно несколько, разработчики nginx советуют количество воркеров определять равным числу ядер машины. Эти дочерние процессы буду обслуживать все соединения с клиентами в неблокирующей манере. В nginx используется бесконечный цикл, который бежит по всем соединениями и отвечает на запросы клиентов. Когда соединение закрывается, оно удаляется из event loop. Это решение идеально подходит для проектов, которые обслуживающих 10к+ соединений одновременно. При этом, загрузка CPU и использование памяти обычно равномерны, без видимых пиков.</p>
+
+<hr />
+
+<h4 id="2-отдаваемый-контент">2. Отдаваемый контент</h4>
+
+<p><strong>Apache</strong> — может генерировать как статический контент, так и динамический. С этим никаких проблем нет. Прекрасно подойдет тем, кто не хочет заморачиваться с проксированием и настройкой дополнительного инструмента для генерации динамики, ведь Apache — это  готовое работающее решение.</p>
+
+<p><strong>Nginx</strong> — отдает только статику и из коробки генерировать динамический контент не умеет. Если вы используете nginx и хотите генерировать динамический контент на своем сайте, то вам придется проксировать запросы тому, кто это делать умеет (apache, php-fpm и др.). Поэтому, разработчикам придется настраивать дополнительную связку, которая усложняет архитектуру, например nginx+apache (кстати в этой связке, Apache называют бекенд сервером, а Nginx — фронтендом), nginx + phpfpm, nginx + python и др.</p>
+
+<hr />
+
+<h4 id="3-конфигурирование">3. Конфигурирование</h4>
+
+<p><strong>Apache</strong> полюбился разработчикам и сисадминам не в последнюю очередь из-за возможности конфигурировать обработку соединений на уровне директорий.  Делается это с помощью скрытого файла .htaccess, позволяющего настраивать права доступа, авторизацию, аутентификацию, политику кеширования и др правила.  Это довольно-таки удобное решение для пользователей, потому что позволяет менять конфигурацию на лету, без перезагрузки сервера и без наличия доступа к основному конфигу сервера. Но также имеется  маленький минус — Apache каждый раз при обработке соединений ищет файл .htacces и считывает с него информацию, что естественно замедляет выдачу ответа клиенту (кстати, поддержку настройки конфигурирования на уровне директорий можно и отключить).</p>
+
+<p><strong>Nginx</strong> не поддерживает конфигурирование на уровне каталогов. Существует один конфигурационный файл на весь проект, который обрабатывает master. Если вы хотите обновить конфигурацию, то необходимо отправить сигнал <code>SIGHUP</code> мастеру, который в свою очередь перезагружает конфигурацию и плавно завершает работу воркеров.</p>
+
+<hr />
+
+<h4 id="4-работа-с-модулями">4. Работа с модулями</h4>
+
+<p><strong>Apache</strong> за долгое время существования обзавелся около 60 официальными модулями, и еще большим числом неофициальных. Модули динамически подключаются, не требуют сборки и перезагрузки веб-сервера.</p>
+
+<p><strong>Nginx</strong> имеет около 130 официальных <a href="https://www.nginx.com/resources/wiki/modules/">модулей</a>. В отличие от Apache, модули Nginx не могут быть динамически загружены на лету и требуют сборки. Это гораздо сложнее, но считается безопаснее.</p>
+
+<hr />
+
+<h4 id="5-интерпретация-запросов">5. Интерпретация запросов</h4>
+
+<p><strong>Apache</strong> имеет возможность интерпретировать запрос как физический ресурс в файловой системе или как URI, который требует дополнительной обработки.</p>
+
+<p><strong>Nginx</strong> создан, чтобы работать и в качестве веб-сервера, и в качестве прокси-сервера. По этой причине он работает в первую очередь с URI, транслируя их при необходимости в запросы к файловой системе.</p>
+
+<hr />
+
+<h4 id="6-работа-со-скриптовыми-языками">6. Работа со скриптовыми языками</h4>
+
+<p>В <strong>Apache</strong> есть один модуль <code>mod_php</code> и все хосты вынуждены работать с одной и той же версией php и одним конфигурационным файлом.</p>
+
+<p>В случае с <strong>nginx</strong>, каждый виртуалхост будет выполняться в отдельном процессе и, соответственно, может использовать разные версии php (python/ruby/perl и др.).  Каждый процесс может иметь свою собственную независимую конфигурацию.</p>
+
+<p>Вообще, в высоконагруженных проектах удобнее держать раздельно nginx и php. По отдельности их проще мониторить, ловить баги или узкие места. «Все-в-одном» Apache+mod_php в этом плане менее удобен.</p>
+
+<p>От основных архитектурных и функциональных отличий переходим к показательным отличиям, отличиям инфрастктуры и всего того, что также является не менее важным при выборе веб-сервера.</p>
+
+<hr />
+
+<h4 id="7-скорость-работы">7.  Скорость работы</h4>
+
+<p>Скорость работы веб-сервера обычно измеряют для 2-х случаев отдачи контента: для статики и динамики.
+На основе тестов производительности, <strong>Nginx</strong> примерно в 2.5 раза быстрее отдает статику, чем <strong>Apache</strong>. Это довольно-таки большое превосходство. Если вам необходимо обслуживать большое количество статического контента, Nginx — лучший выбор.
+Во время тестирования отдачи динамического контента, Apache и Nginx показывают примерно одинаковые результаты. С точки зрения памяти, оба сервера используют один и тот же объем ресурсов.
+(Подробнее о тестах скорости отдачи контента можно почитать <a href="http://www.speedemy.com/apache-vs-nginx-2015/">здесь</a>)</p>
+
+<hr />
+
+<h4 id="8-поддержка-ос">8. Поддержка ОС</h4>
+
+<p><strong>Apache</strong> прекрасно работает на Unix-подобных операционных системах, также разработчики этого веб-сервера полностью поддерживают линейку Microsoft Windows, включая последние версии этой ОС.</p>
+
+<p><strong>Nginx</strong> также поддерживает работу на множестве Unix-подобных ОС и имеет некоторую поддержку Windows, которая не является полной. Но разве кто-то в наше время размещает веб-сервер на Windows?</p>
+
+<hr />
+
+<h4 id="9-сообщество-и-поддержка">9. Сообщество и поддержка</h4>
+
+<p><strong>Apache</strong> на рынке с 1995 года, что очень немалый срок, обеспечивший инструменту огромное сообщество и поддержку с его стороны. Практически на все вопросы на Stack Overflow уже есть исчерпывающие ответы. Коммерческой поддержки нет.</p>
+
+<p><strong>Nginx</strong> веб-сервер более молодой, на рынке он с 2004 года, что также не помешало большому сообществу сформироваться и поддерживать друг друга. Nginx, в отличие от Apache, имеет коммерческую версию Nginx Plus, которая дополнена инструментами балансировки нагрузки, мониторинга, потоковой передачи медиа и др.</p>
+
+<hr />
+
+<h4 id="10-документация-и-обучение">10. Документация и обучение</h4>
+
+<p>И у <strong>Apache</strong> и у <strong>Nginx</strong> присутствует доступная официальная документация.</p>
+
+<p>Nginx предлагает платное обучение, включающее в себя онлайн курсы, практические занятия и экзамен. По окончании курса все участники получают сертификаты. Например, сдать экзамен по основам nginx и получить официальный сертификат обойдется в 49$ (подробнее <a href="https://university.nginx.com/">здесь</a>).</p>
+
+<hr />
+
+<p>От себя хотелось бы отметить, что оба решения очень стабильны, безопасны и поддерживаемы. Выбирайте то, что подходит именно вам.  Пробуйте, экспериментируйте, ошибайтесь и снова пробуйте. Всем добра и будьте здоровы!</p>
+
+<p>При написании статьи были использованы некоторые материалы ресурса <a href="http://www.hostingadvice.com/how-to/nginx-vs-apache">http://www.hostingadvice.com/how-to/nginx-vs-apache</a>/</p>
+
+    </section>
+
+    <hr>
+
+    <footer class="post-footer">
+        <section class="f-1">
+            
+            
+            <p class="f-post-time"><time datetime="2017-06-03T22:21:25&#43;07:00">June 3, 2017</time></p>
+        </section>
+                        
+        <section class="f-2">
+            <section class="share">
+                <span>Share:
+                <a class="icon-twitter" href="http://twitter.com/share?text=10%20%d0%be%d1%82%d0%bb%d0%b8%d1%87%d0%b8%d0%b9%20Apache%20%d0%be%d1%82%20Nginx&url=https%3a%2f%2fEkaterinaGoltsova.github.io%2fposts%2fapache-vs-nginx%2f"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <i class="fa fa-twitter"></i>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fEkaterinaGoltsova.github.io%2fposts%2fapache-vs-nginx%2f"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <i class="fa fa-facebook"></i>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fEkaterinaGoltsova.github.io%2fposts%2fapache-vs-nginx%2f"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <i class="fa fa-google-plus"></i>
+                </a>
+                </span>
+            </section>
+
+            
+        </section>
+             
+        <section id="comments">
+            <div id="disqus_thread" class="post-comments"></div>
+            <script type="text/javascript">
+              if (window.location.hostname != "localhost") {
+                var disqus_shortname = 'ekaterina-goltsova';
+                (function() {
+                  var dsq = document.createElement('script');
+                  dsq.type = 'text/javascript';
+                  dsq.async = true;
+                  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+              }
+            </script>
+            <noscript>
+              Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+            </noscript>
+        </section>
+        
+        
+    </footer>
+</article>
+	</div>
+</main>
+     
+        <section id="comments">
+            <div id="disqus_thread" class="post-comments"></div>
+            <script type="text/javascript">
+              if (window.location.hostname != "localhost") {
+                var disqus_shortname = 'ekaterina-goltsova';
+                (function() {
+                  var dsq = document.createElement('script');
+                  dsq.type = 'text/javascript';
+                  dsq.async = true;
+                  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+              }
+            </script>
+            <noscript>
+              Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+            </noscript>
+        </section>
+        
+
+    <footer id="site-footer">
+        <div class="container">
+          
+          
+          
+          
+          <a href="https://EkaterinaGoltsova.github.io/index.xml" title="Get the RSS feed"><span class="tooltip"><i class="fa fa-rss"></i></span></a>
+          <section>&copy; <a href="https://EkaterinaGoltsova.github.io/"></a> 2017 | All rights reserved</section>
+        </div>
+    </footer>
+
+    <script type="text/javascript" src="https://EkaterinaGoltsova.github.io/js/fittext.js"></script>
+    <script type="text/javascript">
+      $(".heading").fitText();
+    </script>
+
+
+
+</body>
+</html>

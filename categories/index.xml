@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on Записки bаckend-разработчика</title>
+    <link>https://EkaterinaGoltsova.github.io/categories/</link>
+    <description>Recent content in Categories on Записки bаckend-разработчика</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ru-ru</language>
+    
+	<atom:link href="https://EkaterinaGoltsova.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Testing</title>
+      <link>https://EkaterinaGoltsova.github.io/categories/testing/</link>
+      <pubDate>Sun, 25 Jun 2017 18:30:25 +0700</pubDate>
+      
+      <guid>https://EkaterinaGoltsova.github.io/categories/testing/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Web Servers</title>
+      <link>https://EkaterinaGoltsova.github.io/categories/web-servers/</link>
+      <pubDate>Sat, 03 Jun 2017 22:21:25 +0700</pubDate>
+      
+      <guid>https://EkaterinaGoltsova.github.io/categories/web-servers/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Записки bаckend-разработчика</title>
+    <link>https://EkaterinaGoltsova.github.io/</link>
+    <description>Recent content on Записки bаckend-разработчика</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ru-ru</language>
+    <lastBuildDate>Sun, 25 Jun 2017 18:30:25 +0700</lastBuildDate>
+    
+	<atom:link href="https://EkaterinaGoltsova.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>TDD и BDD с примерами</title>
+      <link>https://EkaterinaGoltsova.github.io/posts/tdd-and-bdd/</link>
+      <pubDate>Sun, 25 Jun 2017 18:30:25 +0700</pubDate>
+      
+      <guid>https://EkaterinaGoltsova.github.io/posts/tdd-and-bdd/</guid>
+      <description>Многие разработчики очень любят пренебрегать тестированием собственных задач. Признайтесь, отдавали ли вы задачи в тест, при этом практически не проверяя их? А потом доделывали и опять отдавали, доделывали и отдавали.. А ведь лучше вас unit тестирование никто не проведет, ведь лучше всего знаете и понимаете код — именно вы. Если программист захочет, то с легкостью придумает и воспроизведет граничные ситуации и сразу же сможет их проверить и пофиксить. Роль тестирования сложно недооценить, в наше время умненькие дяденьки даже методологии разработки придумали, главным смыслом которых является написание тестов, а потом уже и самого кода.</description>
+    </item>
+    
+    <item>
+      <title>10 отличий Apache от Nginx</title>
+      <link>https://EkaterinaGoltsova.github.io/posts/apache-vs-nginx/</link>
+      <pubDate>Sat, 03 Jun 2017 22:21:25 +0700</pubDate>
+      
+      <guid>https://EkaterinaGoltsova.github.io/posts/apache-vs-nginx/</guid>
+      <description>Доброго времени суток, backend/frontend/full-stack/devops/qa/.. да какая разница, добро пожаловать, мой друг!
+Свой цикл статей хотелось бы начать с до неприличия банальной фразы - «Все познается в сравнении». Ведь невозможно говорить о том, что какой-либо инструмент лучший, не опробовав другой. Попробуем сравнить два самых популярных в мире веб-сервера - Apache, который обслуживает около 60 млн сайтов, и Nginx — около 40 млн (больше интересной статистики тут). Возможно, после прочтения данной статьи вы сможете определиться, что лучше подходит для вашего dev-окружения.</description>
+    </item>
+    
+  </channel>
+</rss>
